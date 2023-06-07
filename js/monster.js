@@ -20,6 +20,7 @@ let monster = document.getElementById("monster")
 
 
 let timeforrandomaction = 7000
+let sleepTimeout
 
 
 function initMonstre(nom, vie, argent) {
@@ -109,7 +110,7 @@ function dormir() {
         awake = false
         logBoite("Vous vous êtes endormi")
         updatestatut()
-        setTimeout(function () {
+        sleepTimeout = setTimeout(function () {
             awake = true
             life += 1
             logBoite("Vous vous êtes réveillé, vous gagnez 1 point de vie")
@@ -130,6 +131,8 @@ function actionauhasard() {
 
 function kill() {
     if (life > 0) {
+        clearTimeout(sleepTimeout);
+        awake = true;
         life = 0
         logBoite("Vous êtes mort")
         updatestatut()
@@ -141,7 +144,7 @@ function kill() {
 function newlife() {
     if (life === 0) {
         initMonstre("michel", 20, 20)
-        btnKill.addEventListener("click", kill)
+        btnKill.disabled = false
         updatestatut()
     } else {
         logBoite("Vous êtes encore vivant")
@@ -149,40 +152,23 @@ function newlife() {
 }
 
 function refresh() {
+    // border should increment with money
+    monster.style.border = "solid black"
+    monster.style.borderWidth = money + "px"
     if (life < 10) {
-        monster.style.backgroundColor = "red"
+        monster.style.backgroundColor = "rgb(255, " + (255 - life * 25) + ", " + (255 - life * 25) + ")"
     } else if (life < 20) {
-        monster.style.backgroundColor = "green"
-    } else monster.style.backgroundColor = "blue"
-
-if (life === 0) {
-    btnKill.removeEventListener("click", kill)
-} else {
-    btnKill.addEventListener("click", kill)
-}
-if (life > 0) {
-    btnNew.removeEventListener("click", newlife)
-} else {
-    btnNew.addEventListener("click", newlife)
-}
-if (awake === false) {
-    btnSleep.removeEventListener("click", dormir)
-} else {
-    btnSleep.addEventListener("click", dormir)
-}
-if (awake === false || life === 0) {
-    btnSleep.removeEventListener("click", dormir)
-    btnRun.removeEventListener("click", courir)
-    btnFight.removeEventListener("click", seBattre)
-    btnWork.removeEventListener("click", travailler)
-    btnEat.removeEventListener("click", manger)
-} else {
-    btnSleep.addEventListener("click", dormir)
-    btnRun.addEventListener("click", courir)
-    btnFight.addEventListener("click", seBattre)
-    btnWork.addEventListener("click", travailler)
-    btnEat.addEventListener("click", manger)
-}
+        monster.style.backgroundColor = "rgb(" + (255 - (life - 10) * 25) + ", 255, " + (255 - (life - 10) * 25) + ")"
+    } else monster.style.backgroundColor = "rgb(" + (255 - (life - 20) * 25) + ", " + (255 - (life - 20) * 25) + ", 255)"
+    btnKill.disabled = (life === 0);
+    btnNew.disabled = (life > 0)
+    btnSleep.disabled = (awake === false)
+    let state = (awake === false || life === 0)
+    btnSleep.disabled = state
+    btnRun.disabled = state
+    btnFight.disabled = state
+    btnWork.disabled = state
+    btnEat.disabled = state
 }
 
 function go() {
@@ -198,7 +184,7 @@ function go() {
     btnEat.addEventListener("click", manger)
     btnSleep.addEventListener("click", dormir)
     btnNew.addEventListener("click", newlife)
-
+    btnKill.addEventListener("click", kill)
     updatestatut()
 }
 
