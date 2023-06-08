@@ -1,3 +1,5 @@
+'use strict'
+
 let name
 let life
 let money
@@ -21,6 +23,7 @@ let monster = document.getElementById("monster")
 
 let timeforrandomaction = 7000
 let sleepTimeout
+let borderCoef = 0.4
 
 
 function initMonstre(nom, vie, argent) {
@@ -154,12 +157,14 @@ function newlife() {
 function refresh() {
     // border should increment with money
     monster.style.border = "solid black"
-    monster.style.borderWidth = money + "px"
+    monster.style.borderWidth = money * borderCoef + "px"
     if (life < 10) {
-        monster.style.backgroundColor = "rgb(255, " + (255 - life * 25) + ", " + (255 - life * 25) + ")"
+        monster.style.backgroundColor = "rgb(255,0,0,"+(0.2 +(0.8/10)*life)+")"
     } else if (life < 20) {
-        monster.style.backgroundColor = "rgb(" + (255 - (life - 10) * 25) + ", 255, " + (255 - (life - 10) * 25) + ")"
-    } else monster.style.backgroundColor = "rgb(" + (255 - (life - 20) * 25) + ", " + (255 - (life - 20) * 25) + ", 255)"
+        monster.style.backgroundColor = "rgb(0,255,0,"+(0.2 +(0.8/20)*life)+")"
+    } else monster.style.backgroundColor = "rgb(0,0,255,"+(0.2 +(0.8/40)*life)+")"
+
+
     btnKill.disabled = (life === 0);
     btnNew.disabled = (life > 0)
     btnSleep.disabled = (awake === false)
